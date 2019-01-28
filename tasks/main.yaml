@@ -56,8 +56,8 @@
 
     - name: Set rsyslog_purge_original_conf fact to purge all configuration files before saving the new ones.
       set_fact:
-        rsyslog_purge_original_conf: yes
-      when: logging_purge_confs|d(no)
+        rsyslog_purge_original_conf: true
+      when: logging_purge_confs|d(false)
 
     - name: Set custom_config_files fact
       set_fact:
