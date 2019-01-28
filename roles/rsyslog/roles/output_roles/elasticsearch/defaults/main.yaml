@@ -168,11 +168,11 @@ rsyslog_conf_es_elasticsearch:
                   queue.syncqueuefiles="on"
           {% else %}
                   queue.filename="{{ res.queue_filename|default('es-app') }}"
-                  queue.spoolDirectory="{{ res.queue_spooldir|default(`echo $RSYSLOG_SPOOLDIRECTORY`) }}"
+                  queue.spoolDirectory="{{ res.queue_spooldir|default('/var/lib/rsyslog') }}"
                   queue.type="{{ res.queue_type|default('Disk') }}"
-                  queue.maxDiskSpace="{{ res.queue_max_disk_space|default(`echo $ES_QUEUE_MAXDISKSPACE`) }}"
-                  queue.maxFileSize="{{ res.queue_max_file_size|default(`echo $ES_QUEUE_MAXFILESIZE`) }}"
-                  queue.checkpointInterval="{{ res.queue_checkpoint_interval|default(`echo $ES_QUEUE_CHECKPOINTINTERVAL`) }}"
+                  queue.maxDiskSpace="{{ res.queue_max_disk_space|default('1073741824') }}"
+                  queue.maxFileSize="{{ res.queue_max_file_size|default('1073741824') }}"
+                  queue.checkpointInterval="{{ res.queue_checkpoint_interval|default('1000') }}"
                   queue.syncqueuefiles="{{ res.queue_sync_files|default("on") }}"
           {% endif %}
               )
@@ -228,11 +228,11 @@ rsyslog_conf_es_elasticsearch:
                     queue.syncqueuefiles="on"
           {% else %}
                     queue.filename="{{ res.queue_filename|default('es-app') }}"
-                    queue.spoolDirectory="{{ res.queue_spooldir|default(`echo $RSYSLOG_SPOOLDIRECTORY`) }}"
+                    queue.spoolDirectory="{{ res.queue_spooldir|default('/var/lib/rsyslog') }}"
                     queue.type="{{ res.queue_type|default('Disk') }}"
-                    queue.maxDiskSpace="{{ res.queue_max_disk_space|default(`echo $ES_QUEUE_MAXDISKSPACE`) }}"
-                    queue.maxFileSize="{{ res.queue_max_file_size|default(`echo $ES_QUEUE_MAXFILESIZE`) }}"
-                    queue.checkpointInterval="{{ res.queue_checkpoint_interval|default(`echo $ES_QUEUE_CHECKPOINTINTERVAL`) }}"
+                    queue.maxDiskSpace="{{ res.queue_max_disk_space|default('1073741824') }}"
+                    queue.maxFileSize="{{ res.queue_max_file_size|default('1073741824') }}"
+                    queue.checkpointInterval="{{ res.queue_checkpoint_interval|default('1000') }}"
                     queue.syncqueuefiles="{{ res.queue_sync_files|default("on") }}"
           {% endif %}
                 )
@@ -284,11 +284,11 @@ rsyslog_conf_es_elasticsearch:
                     queue.syncqueuefiles="on"
           {% else %}
                     queue.filename="{{ res.queue_filename|default('es-app') }}"
-                    queue.spoolDirectory="{{ res.queue_spooldir|default(`echo $RSYSLOG_SPOOLDIRECTORY`) }}"
+                    queue.spoolDirectory="{{ res.queue_spooldir|default('/var/lib/rsyslog') }}"
                     queue.type="{{ res.queue_type|default('Disk') }}"
-                    queue.maxDiskSpace="{{ res.queue_max_disk_space|default(`echo $ES_QUEUE_MAXDISKSPACE`) }}"
-                    queue.maxFileSize="{{ res.queue_max_file_size|default(`echo $ES_QUEUE_MAXFILESIZE`) }}"
-                    queue.checkpointInterval="{{ res.queue_checkpoint_interval|default(`echo $ES_QUEUE_CHECKPOINTINTERVAL`) }}"
+                    queue.maxDiskSpace="{{ res.queue_max_disk_space|default('1073741824') }}"
+                    queue.maxFileSize="{{ res.queue_max_file_size|default('1073741824') }}"
+                    queue.checkpointInterval="{{ res.queue_checkpoint_interval|default('1000') }}"
                     queue.syncqueuefiles="{{ res.queue_sync_files|default("on") }}"
           {% endif %}
                 )
@@ -345,11 +345,11 @@ rsyslog_conf_es_elasticsearch:
                     queue.syncqueuefiles="on"
           {% else %}
                     queue.filename="{{ res.queue_filename|default('es-app') }}"
-                    queue.spoolDirectory="{{ res.queue_spooldir|default(`echo $RSYSLOG_SPOOLDIRECTORY`) }}"
+                    queue.spoolDirectory="{{ res.queue_spooldir|default('/var/lib/rsyslog') }}"
                     queue.type="{{ res.queue_type|default('Disk') }}"
-                    queue.maxDiskSpace="{{ res.queue_max_disk_space|default(`echo $ES_QUEUE_MAXDISKSPACE`) }}"
-                    queue.maxFileSize="{{ res.queue_max_file_size|default(`echo $ES_QUEUE_MAXFILESIZE`) }}"
-                    queue.checkpointInterval="{{ res.queue_checkpoint_interval|default(`echo $ES_QUEUE_CHECKPOINTINTERVAL`) }}"
+                    queue.maxDiskSpace="{{ res.queue_max_disk_space|default('1073741824') }}"
+                    queue.maxFileSize="{{ res.queue_max_file_size|default('1073741824') }}"
+                    queue.checkpointInterval="{{ res.queue_checkpoint_interval|default('1000') }}"
                     queue.syncqueuefiles="{{ res.queue_sync_files|default("on") }}"
           {% endif %}
                 )
