@@ -229,7 +229,7 @@ The `defaults` directory includes:
 
 The `tasks` directory includes 2 tasks file:
   - `main.yaml` - tasks for deploying the config files
-    This file is sets `rsyslog_role_packages` and `rsyslog_role_rules` and includes the task that deploys the files.
+    This file is sets `__rsyslog_packages` and `__rsyslog_rules` and includes the task that deploys the files.
   - `cleanup.yml` - tasks that cleanup the files deployed for this project.
 
 Examples can be found in the existing projects.
@@ -254,7 +254,7 @@ out while developing.  This is best done by installing molecule in a virtualenv:
 ```
 $ virtualenv .venv
 $ source .venv/bin/activate
-$ pip install molecule docker
+$ pip install 'molecule<3' docker
 ```
 
 It is required to run the tests as a user who is authorized to run the 'docker' command
