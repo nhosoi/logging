@@ -7,9 +7,6 @@
 
 rsyslog_unprivileged: false
 
-rsyslog_elasticsearch: []
-
-
 # oVirt Rsyslog configuration rules
 # ---------------------------
 
@@ -93,7 +90,7 @@ rsyslog_conf_ovirt_formatting:
           # add eventrouter
           if $syslogtag startswith 'collectd' then {
           {% if ovirt_env_uuid_logs is defined %}
-              set $.index_prefix = "{{ rsyslog_elasticsearch_index_prefix_metrics | d("project.ovirt-metrics") }}" & "-" & "{{ ovirt_env_name | d("engine") }}" & "." & "{{ ovirt_env_uuid_metrics }}" & ".";
+              set $.index_prefix = "{{ __rsyslog_elasticsearch | d("project.ovirt-metrics") }}" & "-" & "{{ ovirt_env_name | d("engine") }}" & "." & "{{ ovirt_env_uuid_metrics }}" & ".";
           {% else %}
               set $.index_prefix = "{{ rsyslog_elasticsearch_index_prefix_metrics | d("project.ovirt-metrics") }}" & "-" & "{{ ovirt_env_name | d("engine") }}" & ".";
           {% endif %}
