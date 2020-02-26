@@ -340,9 +340,9 @@ Describing how the configuration files are defined to be deployed using the viaq
 
 Viaq configuration files are defined in {{ __rsyslog_viaq_rules }} in /roles/input_roles/viaq/defaults/main.yaml.  The set is made from the generic modules{__rsyslog_conf_global_options, __rsyslog_conf_local_modules, __rsyslog_conf_common_defaults} and viaq specific configurations.
 
-To make a new configuration file installed in addition to the current {{ rsyslog_viaq_rules }}, create an rsyslog config item based on the following skelton and add the title {{ rsyslog_conf_yourname }} to {{ rsyslog_viaq_rules }}.
+To make a new configuration file installed in addition to the current {{ __rsyslog_viaq_rules }}, create an rsyslog config item based on the following skelton and add the title {{ __rsyslog_conf_yourname }} to {{ __rsyslog_viaq_rules }}.
 ```
-rsyslog_conf_yourname:
+__rsyslog_conf_yourname:
 
   - name: some_name
     type: choose one of 'global' 'module' 'modules' 'template' 'templates' 'output' 'service' 'rule' 'rules' 'ruleset' 'input'
