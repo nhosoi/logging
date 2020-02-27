@@ -151,8 +151,8 @@ logging_outputs:
 ```
 logging_enabled: true
 # If 'viaq-k8s' is in logs collections, logging_mmk8s_* need to be specified.
-logging_mmk8s_token: "{{ rsyslog_viaq_config_dir }}/mmk8s.token"
-logging_mmk8s_ca_cert: "{{ rsyslog_viaq_config_dir }}/mmk8s.ca.crt"
+logging_mmk8s_token: "{{ rsyslog_config_dir }}/mmk8s.token"
+logging_mmk8s_ca_cert: "{{ rsyslog_config_dir }}/mmk8s.ca.crt"
 # If use_omelasticsearch_cert is true, ca_cert, cert and key in rsyslog_outputs needs to be set.
 use_omelasticsearch_cert: true
 # If use_local_omelasticsearch_cert is true, local files ca_cert_src, cert_src and key_src will be deployed to the remote host.
@@ -170,9 +170,9 @@ rsyslog_outputs:
     server_host: logging-es
     server_port: 9200
     index_prefix: project.
-    ca_cert: "{{ rsyslog_viaq_config_dir }}/es-ca.crt"
-    cert: "{{ rsyslog_viaq_config_dir }}/es-cert.pem"
-    key: "{{ rsyslog_viaq_config_dir }}/es-key.pem"
+    ca_cert: "{{ rsyslog_config_dir }}/es-ca.crt"
+    cert: "{{ rsyslog_config_dir }}/es-cert.pem"
+    key: "{{ rsyslog_config_dir }}/es-key.pem"
     ca_cert_src : "/path/to/es-ca.crt"
     cert_src : "/path/to/es-cert.pem"
     key_src : "/path/to/es-key.pem"
@@ -188,9 +188,9 @@ rsyslog_outputs:
     server_host: logging-es-ops
     server_port: 9200
     index_prefix: .operations.
-    ca_cert: "{{ rsyslog_viaq_config_dir }}/es-ca.crt"
-    cert: "{{ rsyslog_viaq_config_dir }}/es-cert.pem"
-    key: "{{ rsyslog_viaq_config_dir }}/es-key.pem"
+    ca_cert: "{{ rsyslog_config_dir }}/es-ca.crt"
+    cert: "{{ rsyslog_config_dir }}/es-cert.pem"
+    key: "{{ rsyslog_config_dir }}/es-key.pem"
     ca_cert_src : "/path/to/es-ca.crt"
     cert_src : "/path/to/es-cert.pem"
     key_src : "/path/to/es-key.pem"
@@ -302,7 +302,6 @@ Files input_role sub-variables
 
 Viaq input_role sub-variables
 -----------------------------
-- `rsyslog_viaq_config_dir`: Directory to store viaq configuration files.  Default to '/etc/rsyslog.d/viaq'.
 - `rsyslog_viaq_log_dir`: Viaq log directory.  Default to '/var/log/containers'.
 - `logging_mmk8s_token`: Path to token for kubernetes.  Default to "/etc/rsyslog.d/viaq/mmk8s.token"
 - `logging_mmk8s_ca_cert`: Path to CA cert for kubernetes.  Default to "/etc/rsyslog.d/viaq/mmk8s.ca.crt"
@@ -363,14 +362,14 @@ By default, the generated configuration file starts with a comment "# Ansible ma
 
 Some full path configuration may be referred from other configuration file, e.g., 20-viaq_formattiong.conf refers parse_json.rulebase as follows.
 ```
-action(type="mmnormalize" ruleBase="{{ rsyslog_viaq_config_dir }}/parse_json.rulebase" variable="$!MESSAGE")
+action(type="mmnormalize" ruleBase="{{ rsyslog_config_dir }}/parse_json.rulebase" variable="$!MESSAGE")
 ```
 In this case, prefix is not needed.  Thus, by setting exact filename, the named configuration file "parse_json.rulebase" is generated.
 ```
   - name: parse_json
     filename: parse_json.rulebase
     nocomment: true
-    path: '{{ rsyslog_viaq_config_dir }}'
+    path: '{{ rsyslog_config_dir }}'
     sections:
 
       - options: |-

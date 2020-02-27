@@ -47,10 +47,6 @@ __rsyslog_conf_viaq_main_modules:
           module(load="imfile" mode="inotify")
 
       - options: |-
-          # Read from journal
-          module(load="imjournal" StateFile="{{ rsyslog_work_dir }}/imjournal.state" UsePid="both" RateLimit.Burst="{{ imjournal_ratelimit_burst | default(1000000) }}" RateLimit.Interval="{{ imjournal_ratelimit_interval | default(10) }}" PersistStateInterval="1000" WorkAroundJournalBug="on")
-
-      - options: |-
           # Normalize logs
           module(load="mmnormalize")
 

@@ -10,3 +10,5 @@ logging_outputs: []
 
 # If logging_purge_confs is set to true, existing config files will be purged.
 logging_purge_confs: false
+
+logging_cert_dir: /etc/pki/rsyslog
