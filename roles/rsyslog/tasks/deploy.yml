@@ -7,6 +7,9 @@
     - not rsyslog_in_image | default(false) | bool
   notify: restart rsyslogd
 
+- debug:
+    msg: "NYA __rsyslog_rules is {{ __rsyslog_rules | flatten }}"
+
 - name: Generate role configuration files in rsyslog.d and subdir
   template:
     src: 'etc/rsyslog.d/rules.conf.j2'

@@ -38,11 +38,6 @@
         path: "{{ __test_files_conf }}"
       register: stat_output_files_system
 
-    - name: Get the forwarding config stat
-      stat:
-        path: "{{ __test_files_conf }}"
-      register: stat_output_files_system
-
     - name: Check if the files config exists
       assert:
         that: stat_output_files_system.stat.exists

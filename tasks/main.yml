@@ -41,9 +41,11 @@
     - name: Set rsyslog_logs_collections
       set_fact:
         rsyslog_logs_collections: "{{ rsyslog_logs_collections | d([]) }} + {{ [ item.1 | combine( {'output_name': item.0.name} )] }}"
-        rsyslog_imjournal_persist_state_interval: '{{ item.1.rsyslog_imjournal_persist_state_interval | d(10) }}'
-        rsyslog_imjournal_ratelimit_interval: '{{ item.1.rsyslog_imjournal_ratelimit_interval | d(600) }}'
-        rsyslog_imjournal_ratelimit_burst: '{{ item.1.rsyslog_imjournal_ratelimit_burst | d(20000) }}'
+        __rsyslog_imjournal_persist_state_interval: '{{ item.1.rsyslog_imjournal_persist_state_interval | d(10) }}'
+        __rsyslog_imjournal_ratelimit_interval: '{{ item.1.rsyslog_imjournal_ratelimit_interval | d(600) }}'
+        __rsyslog_imjournal_ratelimit_burst: '{{ item.1.rsyslog_imjournal_ratelimit_burst | d(20000) }}'
+        __rsyslog_use_system_ruleset: '{{ item.1.rsyslog_use_system_ruleset | d(false) }}'
+        __rsyslog_use_system_ruleset_only: '{{ item.1.rsyslog_use_system_ruleset_only | d(false) }}'
       with_subelements:
         - "{{ logging_outputs }}"
         - logs_collections

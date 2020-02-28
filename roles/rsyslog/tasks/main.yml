@@ -54,6 +54,18 @@
         - rsyslog_unprivileged | bool
         - rsyslog_user != 'root'
 
+    - name: Create logging_cert_dir
+      file:
+        state: directory
+        path: '{{ logging_cert_dir }}'
+        owner: '{{ rsyslog_user }}'
+        group: '{{ rsyslog_file_group }}'
+        mode: 0700
+      register: certdir_result
+      changed_when:
+        - certdir_result.diff.before.state is defined
+        - certdir_result.diff.before.state == 'absent'
+
     # Creating a work directory
     - name: Create a work directory
       file:
@@ -62,7 +74,10 @@
         owner: '{{ rsyslog_user }}'
         group: '{{ rsyslog_file_group }}'
         mode: 0700
-      changed_when: false
+      register: workdir_result
+      changed_when:
+        - workdir_result.diff.before.state is defined
+        - workdir_result.diff.before.state == 'absent'
 
     # Creating a backup dir for rsyslog.d
     - name: Set backup dir name
@@ -76,7 +91,10 @@
         owner: '{{ rsyslog_user }}'
         group: '{{ rsyslog_file_group }}'
         mode: 0755
-      changed_when: false
+      register: backupdir_result
+      changed_when:
+        - backupdir_result.diff.before.state is defined
+        - backupdir_result.diff.before.state == 'absent'
 
     # Back up the pre-existing rsyslog config files in the backup dir,
     # then removing the files/dirs in rsyslog.d.

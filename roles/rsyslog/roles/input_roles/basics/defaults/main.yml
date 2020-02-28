@@ -1,30 +1,36 @@
 ---
 # Basic logs configuration set
 # ----------------------------
-rsyslog_pki: true
-
-rsyslog_unprivileged: false
-
-# rsyslog_capabilities is an array which takes 'network', 'remote-files', 'tls'
-# 'network' enables input and output over network.
-# 'remote-files' allows input from remote hosts are separately stored from the local logs.
-# 'tls' specifies the input and output could be processed over tls.
-#       Note: unles rsyslog_send_over_tls_only is set to true, insecure network connection
-#       is also allowed.
-rsyslog_capabilities: []
-
-rsyslog_use_imuxsock: false
-
-# rsyslog_input_log_{path,tag} are parameters for the imfile.
-# rsyslog_input_log_path specifies the files to read. Wildcard '*' is allowed in the path
-# rsyslog_input_log_tag specifies the tag to be added to the logs.
-rsyslog_input_log_path: "/var/log/containers/*.log"
-rsyslog_input_log_tag: "container"
-
-# imjournal parameters
-rsyslog_imjournal_persist_state_interval: 10 # or 1000?
-rsyslog_imjournal_ratelimit_interval: 600    # or 10?
-rsyslog_imjournal_ratelimit_burst: 20000     # or 1000000?
+#
+############################################# NYA ############################################
+# rsyslog_pki: true
+# 
+# rsyslog_unprivileged: false
+# 
+# # rsyslog_capabilities is an array which takes 'network', 'remote-files', 'tls'
+# # 'network' enables input and output over network.
+# # 'remote-files' allows input from remote hosts are separately stored from the local logs.
+# # 'tls' specifies the input and output could be processed over tls.
+# #       Note: unles rsyslog_send_over_tls_only is set to true, insecure network connection
+# #       is also allowed.
+# rsyslog_capabilities: []
+# 
+# rsyslog_use_imuxsock: false
+# 
+# # rsyslog_input_log_{path,tag} are parameters for the imfile.
+# # rsyslog_input_log_path specifies the files to read. Wildcard '*' is allowed in the path
+# # rsyslog_input_log_tag specifies the tag to be added to the logs.
+# rsyslog_input_log_path: "/var/log/containers/*.log"
+# rsyslog_input_log_tag: "container"
+# 
+# # imjournal parameters
+# rsyslog_imjournal_persist_state_interval: 10 # or 1000?
+# rsyslog_imjournal_ratelimit_interval: 600    # or 10?
+# rsyslog_imjournal_ratelimit_burst: 20000     # or 1000000?
+# 
+# rsyslog_use_system_ruleset: false
+# rsyslog_use_system_ruleset_only: false
+############################################# NYA ############################################
 
 # __rsyslog_basics_rules
 #
@@ -67,10 +73,10 @@ __rsyslog_conf_local_basics_modules:
           # Read from journal
           module(load="imjournal"
                  StateFile="{{ rsyslog_work_dir }}/imjournal.state"
-                 RateLimit.Burst="{{ rsyslog_imjournal_ratelimit_burst }}"
-                 RateLimit.Interval="{{ rsyslog_imjournal_ratelimit_interval }}"
-                 PersistStateInterval="{{ rsyslog_imjournal_persist_state_interval }}")
-          {% if rsyslog_use_system_ruleset %}
+                 RateLimit.Burst="{{ __rsyslog_imjournal_ratelimit_burst }}"
+                 RateLimit.Interval="{{ __rsyslog_imjournal_ratelimit_interval }}"
+                 PersistStateInterval="{{ __rsyslog_imjournal_persist_state_interval }}")
+          {% if __rsyslog_use_system_ruleset %}
           call system
           {% endif %}
 
@@ -121,10 +127,10 @@ __rsyslog_conf_default_rulesets:
 
       - comment: 'Rules for the local system logs'
         options: |-
-          {% if rsyslog_use_system_ruleset %}
+          {% if __rsyslog_use_system_ruleset %}
           ruleset(name="system") {
             $IncludeConfig {{ rsyslog_config_dir }}/*.system
-          {% if rsyslog_use_system_ruleset_only %}
+          {% if __rsyslog_use_system_ruleset_only %}
             stop
           {% endif %}
           }
