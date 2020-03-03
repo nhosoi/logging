@@ -34,7 +34,7 @@ __rsyslog_conf_files_output_rules:
 
   - name: 'output-files'
     type: 'output'
-    suffix: 'system'
+    suffix: 'files'
     path: '{{ rsyslog_config_dir }}'
     sections:
 

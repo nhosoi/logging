@@ -48,6 +48,14 @@ rsyslog_capabilities: []
 # rsyslog_unprivileged: '{{ ansible_distribution in [ "CentOS", "RedHat", "Fedora" ] }}'
 rsyslog_unprivileged: false
 
+##### NYA #####
+#__rsyslog_use_files_ruleset_only: false
+#__rsyslog_use_forwards_ruleset_only: false
+# NYA: TODO
+__rsyslog_use_remote_ruleset_only: false
+# NYA: TODO
+##### NYA #####
+
 ############################################## NYA ############################################
 #
 #rsyslog_use_imuxsock: false
@@ -318,6 +326,7 @@ __rsyslog_common_rules:
   - '{{ __rsyslog_conf_global_options }}'
   - '{{ __rsyslog_conf_local_modules }}'
   - '{{ __rsyslog_conf_common_defaults }}'
+  - '{{ __rsyslog_conf_default_rulesets }}'
   - '{{ __rsyslog_conf_send_targets_only }}'
 
 
@@ -393,6 +402,54 @@ __rsyslog_conf_common_defaults:
       - comment: 'Log every message'
         options: |-
           $RepeatedMsgReduction {{ "on" if rsyslog_message_reduction | bool else "off" }}
+
+
+#### NYA ####
+# __rsyslog_conf_default_rulesets
+#
+# The ``rsyslogd`` configuration can contain multiple rulesets, each one
+# connected to an input channel (see
+# http://www.rsyslog.com/doc/v8-stable/concepts/multi_ruleset.html for more
+# details).
+#
+# By default ``rsyslog`` use the default ruleset for local system logs,
+# and defines a separate ``remote`` ruleset for logs incoming over the
+# network from remote hosts. The local log rules are stored in
+# `{{ rsyslog_config_dir }}/*.system` configuration files, and remote log
+# rules are stored in `{{ rsyslog_config_dir }}/*.remote` configuration files.
+__rsyslog_conf_default_rulesets:
+
+  - name: 'default-rulesets'
+    type: 'rules'
+    sections:
+
+      - comment: 'Rules for the local system logs'
+        options: |-
+          ruleset(name="files") {
+            $IncludeConfig {{ rsyslog_config_dir }}/*.files
+          {% if __rsyslog_use_files_ruleset_only == true %}
+            stop
+          {% endif %}
+          }
+          ruleset(name="forwards") {
+            $IncludeConfig {{ rsyslog_config_dir }}/*.forwards
+          {% if __rsyslog_use_forwards_ruleset_only == true %}
+            stop
+          {% endif %}
+          }
+
+      - comment: 'Rules for logs incoming from remote hosts'
+        options: |-
+          ruleset(name="remote") {
+            $IncludeConfig {{ rsyslog_config_dir }}/*.remote
+          {% if __rsyslog_use_remote_ruleset_only == true %}
+            stop
+          {% endif %}
+          }
+        state: '{{ "present"
+                  if ("network" in rsyslog_capabilities)
+                  else "absent" }}'
+#### NYA ####
 
 __rsyslog_conf_send_targets_only:
 

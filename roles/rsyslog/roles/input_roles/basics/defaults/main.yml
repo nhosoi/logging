@@ -71,14 +71,22 @@ __rsyslog_conf_local_basics_modules:
                  SysSock.Use="off") # Turn off message reception via local log socket.
           {% endif %}
           # Read from journal
+          {% for element in rsyslog_logs_collections %}
+          {% if element.name is defined and element.type == "basics" %}
           module(load="imjournal"
                  StateFile="{{ rsyslog_work_dir }}/imjournal.state"
-                 RateLimit.Burst="{{ __rsyslog_imjournal_ratelimit_burst }}"
-                 RateLimit.Interval="{{ __rsyslog_imjournal_ratelimit_interval }}"
-                 PersistStateInterval="{{ __rsyslog_imjournal_persist_state_interval }}")
-          {% if __rsyslog_use_system_ruleset %}
-          call system
+                 RateLimit.Burst="{{ element.rsyslog_imjournal_ratelimit_burst }}"
+                 RateLimit.Interval="{{ element.rsyslog_imjournal_ratelimit_interval }}"
+                 PersistStateInterval="{{ element.rsyslog_imjournal_persist_state_interval }}")
+          {% if element.rsyslog_use_files_ruleset is defined and element.rsyslog_use_files_ruleset %}
+          call files
           {% endif %}
+          {% if element.rsyslog_use_forwards_ruleset is defined and element.rsyslog_use_forwards_ruleset %}
+          call forwards
+          {% endif %}
+
+          {% endif %}
+          {% endfor %}
 
       - comment: 'Read messages sent over UDP or plain TCP without TLS'
         options: |-
@@ -107,45 +115,49 @@ __rsyslog_conf_local_basics_modules:
                   if ("network" in rsyslog_capabilities) and ("tls" in rsyslog_capabilities)
                   else "absent" }}'
 
-# __rsyslog_conf_default_rulesets
+## __rsyslog_conf_default_rulesets
+##
+## The ``rsyslogd`` configuration can contain multiple rulesets, each one
+## connected to an input channel (see
+## http://www.rsyslog.com/doc/v8-stable/concepts/multi_ruleset.html for more
+## details).
+##
+## By default ``rsyslog`` use the default ruleset for local system logs,
+## and defines a separate ``remote`` ruleset for logs incoming over the
+## network from remote hosts. The local log rules are stored in
+## `{{ rsyslog_config_dir }}/*.system` configuration files, and remote log
+## rules are stored in `{{ rsyslog_config_dir }}/*.remote` configuration files.
+#__rsyslog_conf_default_rulesets:
 #
-# The ``rsyslogd`` configuration can contain multiple rulesets, each one
-# connected to an input channel (see
-# http://www.rsyslog.com/doc/v8-stable/concepts/multi_ruleset.html for more
-# details).
+#  - name: 'default-rulesets'
+#    type: 'rules'
+#    sections:
 #
-# By default ``rsyslog`` use the default ruleset for local system logs,
-# and defines a separate ``remote`` ruleset for logs incoming over the
-# network from remote hosts. The local log rules are stored in
-# `{{ rsyslog_config_dir }}/*.system` configuration files, and remote log
-# rules are stored in `{{ rsyslog_config_dir }}/*.remote` configuration files.
-__rsyslog_conf_default_rulesets:
-
-  - name: 'default-rulesets'
-    type: 'rules'
-    sections:
-
-      - comment: 'Rules for the local system logs'
-        options: |-
-          {% if __rsyslog_use_system_ruleset %}
-          ruleset(name="system") {
-            $IncludeConfig {{ rsyslog_config_dir }}/*.system
-          {% if __rsyslog_use_system_ruleset_only %}
-            stop
-          {% endif %}
-          }
-          {% else %}
-          $IncludeConfig {{ rsyslog_config_dir }}/*.system
-          {% endif %}
-
-      - comment: 'Rules for logs incoming from remote hosts'
-        options: |-
-          ruleset(name="remote") {
-            $IncludeConfig {{ rsyslog_config_dir }}/*.remote
-          }
-        state: '{{ "present"
-                  if ("network" in rsyslog_capabilities)
-                  else "absent" }}'
+#      - comment: 'Rules for the local system logs'
+#        options: |-
+#          {% if __rsyslog_use_files_ruleset %}
+#          ruleset(name="files") {
+#            $IncludeConfig {{ rsyslog_config_dir }}/*.files
+#          }
+#          {% else %}
+#          $IncludeConfig {{ rsyslog_config_dir }}/*.files
+#          {% endif %}
+#          {% if __rsyslog_use_forwards_ruleset %}
+#          ruleset(name="forwards") {
+#            $IncludeConfig {{ rsyslog_config_dir }}/*.forwards
+#          }
+#          {% else %}
+#          $IncludeConfig {{ rsyslog_config_dir }}/*.forwards
+#          {% endif %}
+#
+#      - comment: 'Rules for logs incoming from remote hosts'
+#        options: |-
+#          ruleset(name="remote") {
+#            $IncludeConfig {{ rsyslog_config_dir }}/*.remote
+#          }
+#        state: '{{ "present"
+#                  if ("network" in rsyslog_capabilities)
+#                  else "absent" }}'
 
 # __rsyslog_conf_system_input
 #
