@@ -51,10 +51,6 @@ __rsyslog_conf_imfile_inputs:
           input(type="imfile" file="{{ input.rsyslog_input_log_path | d(rsyslog_input_log_path) }}" tag="{{ input.name }}")
           {%   endif %}
           {% endfor %}
-          {% set rsyslog_outputs = logging_outputs | d([]) %}
-          {% if not rsyslog_outputs | selectattr("type", "==", "files") | list %}
-          {%   set rsyslog_outputs = rsyslog_outputs + [{"name": "files", "type": "files"}] %}
-          {% endif %}
           {% set indict = {} %}
           {% set input_list = [] %}
           {% for input in logging_inputs %}
@@ -63,7 +59,7 @@ __rsyslog_conf_imfile_inputs:
           {%     set input_list = input_list.append( input.name ) %}
           {%   endif %}
           {% endfor %}
-          {% set rsyslog_flows = logging_flows | d([ {"name": "default_flow", "inputs": input_list, "outputs": ["files"]} ]) %}
+          {% set rsyslog_flows = logging_flows | d([ {"name": "default_flow", "inputs": input_list, "outputs": ["default_files"]} ], true) %}
           {% set outdict = {} %}
           {% for flow in rsyslog_flows %}
           {%   for oname in flow.outputs %}

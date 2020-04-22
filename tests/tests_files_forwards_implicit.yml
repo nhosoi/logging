@@ -29,7 +29,7 @@
         logging_flows:
           - name: flow0
             inputs: [basic_input0]
-            outputs: [files, forwards_severity_and_facility, forwards_facility_only]
+            outputs: [default_files, forwards_severity_and_facility, forwards_facility_only]
       include_role:
         name: linux-system-roles.logging
 
