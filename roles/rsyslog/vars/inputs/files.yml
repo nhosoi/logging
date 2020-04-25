@@ -1,0 +1,87 @@
+---
+# Imfile configuration setting
+# ----------------------------
+
+# rsyslog_capabilities is an array which takes 'network', 'remote-files', 'tls'
+# 'network' enables input and output over network.
+# 'remote-files' allows input from remote hosts are separately stored from the local logs.
+# 'tls' specifies the input and output could be processed over tls.
+#       Note: unles rsyslog_send_over_tls_only is set to true, insecure network connection
+#       is also allowed.
+rsyslog_capabilities: []
+__rsyslog_files_input_packages: []
+
+rsyslog_input_log_path: "/var/log/containers/*.log"
+
+# __rsyslog_files_input_rules
+#
+# List of YAML dictionaries, each dictionary should contain ``rsyslogd`` configuration
+# in a special format. This list specifies ``rsyslogd`` imfile configuration.
+__rsyslog_files_input_rules:
+  - '{{ __rsyslog_conf_imfile_modules }}'
+  - '{{ __rsyslog_conf_imfile_inputs }}'
+
+# Debops example configuration options
+# --------------------------------------------
+
+# __rsyslog_conf_local_modules
+#
+# List of ``rsyslogd`` modules that enable logs from the local system to be
+# received and parsed by the ``rsyslogd`` daemon.
+__rsyslog_conf_imfile_modules:
+
+  - name: 'imfile-modules'
+    type: 'modules'
+    sections:
+
+      - comment: 'Reads log messages from file'
+        options: |-
+          module(load="imfile" mode="inotify")
+
+__rsyslog_conf_imfile_inputs:
+
+  - name: 'imfile-input'
+    type: 'input'
+    sections:
+
+      - comment: 'Log messages from log files'
+        options: |-
+          {% for input in logging_inputs %}
+          {%   if input.type == "files" %}
+          input(type="imfile" file="{{ input.rsyslog_input_log_path | d(rsyslog_input_log_path) }}" tag="{{ input.name }}")
+          {%   endif %}
+          {% endfor %}
+          {% set indict = {} %}
+          {% set input_list = [] %}
+          {% for input in logging_inputs %}
+          {%   set _ = indict.__setitem__(input.name, input) %}
+          {%   if input.type == "files" %}
+          {%     set input_list = input_list.append( input.name ) %}
+          {%   endif %}
+          {% endfor %}
+          {% set rsyslog_flows = logging_flows | d([ {"name": "default_flow", "inputs": input_list, "outputs": ["default_files"]} ], true) %}
+          {% set outdict = {} %}
+          {% for flow in rsyslog_flows %}
+          {%   for oname in flow.outputs %}
+          {%     set _ = outdict.__setitem__(oname, outdict.get(oname,[])|union(flow.inputs)) %}
+          {%   endfor %}
+          {% endfor %}
+          {% for output in rsyslog_outputs %}
+          {%   if outdict[output.name] | d(false) %}
+          if
+          {%     for inputname in outdict[output.name] %}
+          {%       if not loop.first %}
+            or
+          {%       endif %}
+          {%       set input = indict[inputname] %}
+          {%       if input.type == "basics" %}
+            ($inputname == "imjournal")
+          {%       elif input.type == "files" %}
+            ($syslogtag == "{{ input.name }}")
+          {%       endif %}
+          {%     endfor %}
+            then {
+              call {{ output.name }}
+          }
+          {%   endif %}
+          {% endfor %}

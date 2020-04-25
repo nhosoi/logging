@@ -1,6 +1,8 @@
 ---
 # Forwards output configuration
 # ---------------------------------
+# List of rpm packages for Forwards output.
+__rsyslog_forwards_output_packages: []
 
 # Forwards Rsyslog output configuration rules
 # ---------------------------------
