@@ -1,6 +1,11 @@
 ---
 # Viaq configuration
 # ---------------------
+#
+# __rsyslog_viaq_k8s_packages
+#
+# List of rpm packages for viaq_kubernetes
+__rsyslog_viaq_k8s_packages: ['rsyslog-mmjsonparse', 'rsyslog-mmkubernetes']
 
 # rsyslog_viaq_log_dir
 #
