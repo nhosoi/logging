@@ -11,12 +11,6 @@ It is designed to satisfy following requirements.
 logging/
 ├── defaults
 │   └── main.yml
-├── design_docs
-│   ├── logging_subsystem.md
-│   ├── README.md
-│   ├── rsyslog_input_output_roles.md
-│   ├── rsyslog_inputs_outputs_flows.md
-│   └── rsyslog_templates.md
 ├── meta
 │   └── main.yml
 ├── molecule
@@ -26,17 +20,14 @@ logging/
 │       ├── molecule.yml
 │       ├── playbook.yml
 │       ├── tests
-│       │   │
 │       │   └── test_default.py
 │       └── yaml-lint.yml
-├── README.md
 ├── roles
 │   └── rsyslog
 │       ├── defaults
 │       │   └── main.yml
 │       ├── handlers
 │       │   └── main.yml
-│       ├── README.md
 │       ├── tasks
 │       │   ├── cleanup.yml
 │       │   ├── deploy.yml
@@ -65,10 +56,13 @@ logging/
 │       │       └── forwards
 │       │           └── main.yml
 │       ├── templates
-│       │   └── etc
-│       │       ├── rsyslog.conf.j2
-│       │       └── rsyslog.d
-│       │           └── rules.conf.j2
+│       │   ├── etc
+│       │   │   ├── rsyslog.conf.j2
+│       │   │   └── rsyslog.d
+│       │   │       └── rules.conf.j2
+│       │   ├── output_elasticsearch.j2
+│       │   ├── output_files.j2
+│       │   └── output_forwards.j2
 │       └── vars
 │           ├── inputs
 │           │   ├── basics
@@ -90,9 +84,22 @@ logging/
 │               └── forwards
 │                   └── main.yml
 ├── tasks
-│   ├── main.yml
-│   └── main.yml.new
-└── tox.ini
+│   └── main.yml
+└── tests
+    ├── set_rsyslog_variables.yml
+    ├── tests_combination2.yml
+    ├── tests_combination.yml
+    ├── tests_default_files_log_dir.yml
+    ├── tests_default_files.yml
+    ├── tests_default.yml
+    ├── tests_enabled.yml
+    ├── tests_files_elasticsearch.yml
+    ├── tests_files_files.yml
+    ├── tests_files_forwards_implicit.yml
+    ├── tests_files_forwards.yml
+    ├── tests_files.yml
+    ├── tests_forwards.yml
+    └── tests_listen.yml
 ```
 
 # How Logging role starts
