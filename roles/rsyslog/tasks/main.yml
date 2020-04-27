@@ -134,15 +134,13 @@
       include_vars:
         file: "{{ varfile }}"
       vars:
-        varfile: "inputs/{{ input_item.type }}.yml"
-        varfile_abspath: "{{ role_path }}/vars/{{ varfile }}"
+        varfile: "inputs/{{ input_item.type }}/main.yml"
       loop: "{{ logging_inputs | flatten(1) }}"
       loop_control:
         loop_var: input_item
       when:
         - rsyslog_enabled | bool
         - input_item | d([])
-        - varfile_abspath is exists
       tags:
         - skip_ansible_lint
 
@@ -150,15 +148,13 @@
       include_tasks:
         file: "{{ tasks }}"
       vars:
-        tasks: "inputs/{{ input_item.type }}.yml"
-        tasks_abspath: "{{ role_path }}/tasks/{{ tasks }}"
+        tasks: "inputs/{{ input_item.type }}/main.yml"
       loop: "{{ logging_inputs | flatten(1) }}"
       loop_control:
         loop_var: input_item
       when:
         - rsyslog_enabled | bool
         - input_item | d([])
-        - tasks_abspath is exists
       tags:
         - skip_ansible_lint
 
@@ -166,8 +162,7 @@
       include_tasks:
         file: "{{ tasks }}"
       vars:
-        tasks: "inputs/{{ input_item.type }}_cleanup.yml"
-        tasks_abspath: "{{ role_path }}/tasks/{{ tasks }}"
+        tasks: "inputs/{{ input_item.type }}/cleanup.yml"
       loop: "{{ logging_inputs | flatten(1) }}"
       loop_control:
         loop_var: input_item
@@ -179,15 +174,13 @@
       include_vars:
         file: "{{ varfile }}"
       vars:
-        varfile: "outputs/{{ output_item.type }}.yml"
-        varfile_abspath: "{{ role_path }}/vars/{{ varfile }}"
+        varfile: "outputs/{{ output_item.type }}/main.yml"
       loop: "{{ rsyslog_outputs | flatten(1) }}"
       loop_control:
         loop_var: output_item
       when:
         - rsyslog_enabled | bool
         - output_item | d([])
-        - varfile_abspath is exists
       tags:
         - skip_ansible_lint
 
@@ -195,15 +188,13 @@
       include_tasks:
         file: "{{ tasks }}"
       vars:
-        tasks: "outputs/{{ output_item.type }}.yml"
-        tasks_abspath: "{{ role_path }}/tasks/{{ tasks }}"
+        tasks: "outputs/{{ output_item.type }}/main.yml"
       loop: "{{ rsyslog_outputs | flatten(1) }}"
       loop_control:
         loop_var: output_item
       when:
         - rsyslog_enabled | bool
         - output_item | d([])
-        - tasks_abspath is exists
       tags:
         - skip_ansible_lint
 
