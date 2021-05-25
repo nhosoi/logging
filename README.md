@@ -59,7 +59,7 @@ This role is supported on RHEL/CentOS-7, RHEL/CentOS-8 and Fedora distributions.
 
 Logging role allows to have variables `logging_inputs`, `logging_outputs`, and `logging_flows` with additional options to configure logging system such as `rsyslog`.
 
-Currently, the logging role supports four types of logging [inputs](tasks/inputs/): `basics`, `files`, `ovirt`, and `remote`.  And four types of [outputs](tasks/outputs/): `elasticsearch`, `files`, `forwards`, and `remote_files`.  To deploy configuration files with these inputs and outputs, specify the inputs as `logging_inputs` and the outputs as `logging_outputs`. To define the flows from inputs to outputs, use `logging_flows`.  The `logging_flows` has three keys `name`, `inputs`, and `outputs`, where `inputs` is a list of `logging_inputs name` values and `outputs` is a list of `logging_outputs name` values.
+Currently, the logging role supports four types of logging inputs: `basics`, `files`, `ovirt`, and `remote`.  And four types of outputs: `elasticsearch`, `files`, `forwards`, and `remote_files`.  To deploy configuration files with these inputs and outputs, specify the inputs as `logging_inputs` and the outputs as `logging_outputs`. To define the flows from inputs to outputs, use `logging_flows`.  The `logging_flows` has three keys `name`, `inputs`, and `outputs`, where `inputs` is a list of `logging_inputs name` values and `outputs` is a list of `logging_outputs name` values.
 
 This is a schematic logging configuration to show log messages from input_nameA are passed to output_name0 and output_name1; log messages from input_nameB are passed only to output_name1.
 
@@ -814,8 +814,8 @@ If other ports need to be configured, you can use [linux-system-roles/selinux](h
 
 ## Providers
 
-[Rsyslog](roles/rsyslog) - This documentation contains rsyslog specific information.
+- Rsyslog
 
 ## Tests
 
-[Automated CI-tests](tests) - This documentation shows how to execute CI tests in the [tests](tests) directory as well as how to debug when the test fails.
+tests/README.md - This documentation shows how to execute CI tests in the tests directory as well as how to debug when the test fails.
