@@ -62,31 +62,29 @@ Currently, the logging role supports four types of logging inputs: `basics`, `fi
 
 This is a schematic logging configuration to show log messages from input_nameA are passed to output_name0 and output_name1; log messages from input_nameB are passed only to output_name1.
 
-```yaml
----
-- name: a schematic logging configuration
-  hosts: all
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: input_nameA
-        type: input_typeA
-      - name: input_nameB
-        type: input_typeB
-    logging_outputs:
-      - name: output_name0
-        type: output_type0
-      - name: output_name1
-        type: output_type1
-    logging_flows:
-      - name: flow_nameX
-        inputs: [input_nameA]
-        outputs: [output_name0, output_name1]
-      - name: flow_nameY
-        inputs: [input_nameB]
-        outputs: [output_name1]
-```
+    ---
+    - name: a schematic logging configuration
+      hosts: all
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: input_nameA
+            type: input_typeA
+          - name: input_nameB
+            type: input_typeB
+        logging_outputs:
+          - name: output_name0
+            type: output_type0
+          - name: output_name1
+            type: output_type1
+        logging_flows:
+          - name: flow_nameX
+            inputs: [input_nameA]
+            outputs: [output_name0, output_name1]
+          - name: flow_nameY
+            inputs: [input_nameB]
+            outputs: [output_name1]
 
 ## Variables
 
@@ -166,40 +164,34 @@ Available options:
 
 **Note:** There are 3 types of items in the remote type - udp, plain tcp and tls tcp. The udp type configured using `udp_ports`; the plain tcp type is configured using `tcp_ports` without `tls` or with `tls: false`; the tls tcp type is configured using `tcp_ports` with `tls: true` at the same time. Please note there might be only one instance of each of the three types. E.g., if there are 2 `udp` type items, it fails to deploy.
 
-```yaml
-  # Valid configuration example
-  - name: remote_udp
-    type: remote
-    udp_ports: [514, ...]
-  - name: remote_ptcp
-    type: remote
-    tcp_ports: [514, ...]
-  - name: remote_tcp
-    type: remote
-    tcp_ports: [6514, ...]
-    tls: true
-    pki_authmode: x509/name
-    permitted_clients: ['*.example.com']
-```
+    # Valid configuration example
+    - name: remote_udp
+      type: remote
+      udp_ports: [514, ...]
+    - name: remote_ptcp
+      type: remote
+      tcp_ports: [514, ...]
+    - name: remote_tcp
+      type: remote
+      tcp_ports: [6514, ...]
+      tls: true
+      pki_authmode: x509/name
+      permitted_clients: ['*.example.com']
 
-```yaml
-  # Invalid configuration example 1; duplicated udp
-  - name: remote_udp0
-    type: remote
-    udp_ports: [514]
-  - name: remote_udp1
-    type: remote
-    udp_ports: [1514]
-```
+    # Invalid configuration example 1; duplicated udp
+    - name: remote_udp0
+      type: remote
+      udp_ports: [514]
+    - name: remote_udp1
+      type: remote
+      udp_ports: [1514]
 
-```yaml
-  # Invalid configuration example 2; duplicated tcp
-  - name: remote_implicit_tcp
-    type: remote
-  - name: remote_tcp
-    type: remote
-    tcp_ports: [1514]
-```
+    # Invalid configuration example 2; duplicated tcp
+    - name: remote_implicit_tcp
+      type: remote
+    - name: remote_tcp
+      type: remote
+      tcp_ports: [1514]
 
 ### Logging_outputs options
 
@@ -247,16 +239,14 @@ Available options:
 
 **Note:** Unless the above options are given, these local file outputs are configured.
 
-```
-  kern.*                                      /dev/console
-  *.info;mail.none;authpriv.none;cron.none    /var/log/messages
-  authpriv.*                                  /var/log/secure
-  mail.*                                      -/var/log/maillog
-  cron.*                                      -/var/log/cron
-  *.emerg                                     :omusrmsg:*
-  uucp,news.crit                              /var/log/spooler
-  local7.*
-```
+    kern.*                                      /dev/console
+    *.info;mail.none;authpriv.none;cron.none    /var/log/messages
+    authpriv.*                                  /var/log/secure
+    mail.*                                      -/var/log/maillog
+    cron.*                                      -/var/log/cron
+    *.emerg                                     :omusrmsg:*
+    uucp,news.crit                              /var/log/spooler
+    local7.*
 
 #### forwards type
 
@@ -318,34 +308,32 @@ Available options:
 
 **Note:** If both `remote_log_path` and `remote_sub_path` are _not_ specified, the remote_file output configured with the following settings.
 
-```
-  template(
-    name="RemoteMessage"
-    type="string"
-    string="/var/log/remote/msg/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log"
-  )
-  template(
-    name="RemoteHostAuthLog"
-    type="string"
-    string="/var/log/remote/auth/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log"
-  )
-  template(
-    name="RemoteHostCronLog"
-    type="string"
-    string="/var/log/remote/cron/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log"
-  )
-  template(
-    name="RemoteHostMailLog"
-    type="string"
-    string="/var/log/remote/mail/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log"
-  )
-  ruleset(name="unique_remote_files_output_name") {
-    authpriv.*   action(name="remote_authpriv_host_log" type="omfile" DynaFile="RemoteHostAuthLog")
-    *.info;mail.none;authpriv.none;cron.none action(name="remote_message" type="omfile" DynaFile="RemoteMessage")
-    cron.*       action(name="remote_cron_log" type="omfile" DynaFile="RemoteHostCronLog")
-    mail.*       action(name="remote_mail_service_log" type="omfile" DynaFile="RemoteHostMailLog")
-  }
-```
+    template(
+      name="RemoteMessage"
+      type="string"
+      string="/var/log/remote/msg/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log"
+    )
+    template(
+      name="RemoteHostAuthLog"
+      type="string"
+      string="/var/log/remote/auth/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log"
+    )
+    template(
+      name="RemoteHostCronLog"
+      type="string"
+      string="/var/log/remote/cron/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log"
+    )
+    template(
+      name="RemoteHostMailLog"
+      type="string"
+      string="/var/log/remote/mail/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log"
+    )
+    ruleset(name="unique_remote_files_output_name") {
+      authpriv.*   action(name="remote_authpriv_host_log" type="omfile" DynaFile="RemoteHostAuthLog")
+      *.info;mail.none;authpriv.none;cron.none action(name="remote_message" type="omfile" DynaFile="RemoteMessage")
+      cron.*       action(name="remote_cron_log" type="omfile" DynaFile="RemoteHostCronLog")
+      mail.*       action(name="remote_mail_service_log" type="omfile" DynaFile="RemoteHostMailLog")
+    }
 
 ### Logging_flows options
 
@@ -365,17 +353,15 @@ When TLS connection is configured, `ca_cert_src` and/or `ca_cert` is required.
 To configure the certificate of the logging system, `cert_src` and/or `cert` is required.
 To configure the private key of the logging system, `private_key_src` and/or `private_key` is required.
 
-```
-  ca_cert_src:     location of the ca_cert on the control host; if given, the file is copied to the managed host.
-  cert_src:        location of the cert on the control host; if given, the file is copied to the managed host.
-  private_key_src: location of the key on the control host; if given, the file is copied to the managed host.
-  ca_cert:     path to be deployed on the managed host; the path is also used in the rsyslog config.
-               default to /etc/pki/tls/certs/<ca_cert_src basename>
-  cert:        ditto
-               default to /etc/pki/tls/certs/<cert_src basename>
-  private_key: ditto
-               default to /etc/pki/tls/private/<private_key_src basename>
-```
+    ca_cert_src:     location of the ca_cert on the control host; if given, the file is copied to the managed host.
+    cert_src:        location of the cert on the control host; if given, the file is copied to the managed host.
+    private_key_src: location of the key on the control host; if given, the file is copied to the managed host.
+    ca_cert:     path to be deployed on the managed host; the path is also used in the rsyslog config.
+                 default to /etc/pki/tls/certs/<ca_cert_src basename>
+    cert:        ditto
+                 default to /etc/pki/tls/certs/<cert_src basename>
+    private_key: ditto
+                 default to /etc/pki/tls/private/<private_key_src basename>
 
 #### logging_domain
 
@@ -407,48 +393,44 @@ These variables are set in the same level of the `logging_inputs`, `logging_outp
 
 Due to the nature of ansible idempotency, if you run ansible-playbook multiple times without changing any variables and options, no changes are made from the second time. If some changes are made, only the rsyslog configuration files affected by the changes are recreated. To delete any existing rsyslog input or output config files generated by the previous ansible-playbook run, you need to add "state: absent" to the dictionary to be deleted (in this case, input_nameA and output_name0). And remove the flow dictionary related to the input and output as follows.
 
-```yaml
-logging_inputs:
-  - name: input_nameA
-    type: input_typeA
-    state: absent
-  - name: input_nameB
-    type: input_typeB
-logging_outputs:
-  - name: output_name0
-    type: output_type0
-    state: absent
-  - name: output_name1
-    type: output_type1
-logging_flows:
-  - name: flow_nameY
-    inputs: [input_nameB]
-    outputs: [output_name1]
-```
+    logging_inputs:
+      - name: input_nameA
+        type: input_typeA
+        state: absent
+      - name: input_nameB
+        type: input_typeB
+    logging_outputs:
+      - name: output_name0
+        type: output_type0
+        state: absent
+      - name: output_name1
+        type: output_type1
+    logging_flows:
+      - name: flow_nameY
+        inputs: [input_nameB]
+        outputs: [output_name1]
 
 If you want to remove all the configuration files previously configured, in addition to setting `state: absent` to each logging_inputs and logging_outputs item, add `logging_enabled: false` to the configuration variables as follows. It will eliminate the global and common configuration files, as well.
 
-```yaml
-logging_enabled: false
-logging_inputs:
-  - name: input_nameA
-    type: input_typeA
-    state: absent
-  - name: input_nameB
-    type: input_typeB
-    state: absent
-logging_outputs:
-  - name: output_name0
-    type: output_type0
-    state: absent
-  - name: output_name1
-    type: output_type1
-    state: absent
-logging_flows:
-  - name: flow_nameY
-    inputs: [input_nameB]
-    outputs: [output_name1]
-```
+    logging_enabled: false
+    logging_inputs:
+      - name: input_nameA
+        type: input_typeA
+        state: absent
+      - name: input_nameB
+        type: input_typeB
+        state: absent
+    logging_outputs:
+      - name: output_name0
+        type: output_type0
+        state: absent
+      - name: output_name1
+        type: output_type1
+        state: absent
+    logging_flows:
+      - name: flow_nameY
+        inputs: [input_nameB]
+        outputs: [output_name1]
 
 ## Configuration Examples
 
@@ -456,358 +438,332 @@ logging_flows:
 
 Deploying `basics input` reading logs from systemd journal and implicit `files output` to write to the local files.
 
-```yaml
----
-- name: Deploying basics input and implicit files output
-  hosts: all
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: system_input
-        type: basics
-```
+    ---
+    - name: Deploying basics input and implicit files output
+      hosts: all
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: system_input
+            type: basics
 
 The following playbook generates the same logging configuration files.
 
-```yaml
----
-- name: Deploying basics input and files output
-  hosts: all
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: system_input
-        type: basics
-    logging_outputs:
-      - name: files_output
-        type: files
-    logging_flows:
-      - name: flow0
-        inputs: [system_input]
-        outputs: [files_output]
-```
+    ---
+    - name: Deploying basics input and files output
+      hosts: all
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: system_input
+            type: basics
+        logging_outputs:
+          - name: files_output
+            type: files
+        logging_flows:
+          - name: flow0
+            inputs: [system_input]
+            outputs: [files_output]
 
 Deploying `basics input` reading logs from systemd unix socket and `files output` to write to the local files.
 
-```yaml
----
-- name: Deploying basics input using systemd unix socket and files output
-  hosts: all
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: system_input
-        type: basics
-        use_imuxsock: true
-    logging_outputs:
-      - name: files_output
-        type: files
-    logging_flows:
-      - name: flow0
-        inputs: [system_input]
-        outputs: [files_output]
-```
+    ---
+    - name: Deploying basics input using systemd unix socket and files output
+      hosts: all
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: system_input
+            type: basics
+            use_imuxsock: true
+        logging_outputs:
+          - name: files_output
+            type: files
+        logging_flows:
+          - name: flow0
+            inputs: [system_input]
+            outputs: [files_output]
 
 Deploying `basics input` reading logs from systemd journal and `files output` to write to the individually configured local files.
 
-```yaml
----
-- name: Deploying basic input and configured files output
-  hosts: all
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: system_input
-        type: basics
-    logging_outputs:
-      - name: files_output0
-        type: files
-        severity: info
-        exclude:
-          - authpriv.none
-          - auth.none
-          - cron.none
-          - mail.none
-        path: /var/log/messages
-      - name: files_output1
-        type: files
-        facility: authpriv,auth
-        path: /var/log/secure
-    logging_flows:
-      - name: flow0
-        inputs: [system_input]
-        outputs: [files_output0, files_output1]
-```
+    ---
+    - name: Deploying basic input and configured files output
+      hosts: all
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: system_input
+            type: basics
+        logging_outputs:
+          - name: files_output0
+            type: files
+            severity: info
+            exclude:
+              - authpriv.none
+              - auth.none
+              - cron.none
+              - mail.none
+            path: /var/log/messages
+          - name: files_output1
+            type: files
+            facility: authpriv,auth
+            path: /var/log/secure
+        logging_flows:
+          - name: flow0
+            inputs: [system_input]
+            outputs: [files_output0, files_output1]
 
 Deploying `files input` reading logs from local files and `files output` to write to the individually configured local files.
 
-```yaml
----
-- name: Deploying files input and configured files output
-  hosts: all
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: files_input0
-        type: files
-        input_log_path: /var/log/containerA/*.log
-      - name: files_input1
-        type: files
-        input_log_path: /var/log/containerB/*.log
-    logging_outputs:
-      - name: files_output0
-        type: files
-        severity: info
-        exclude:
-          - authpriv.none
-          - auth.none
-          - cron.none
-          - mail.none
-        path: /var/log/messages
-      - name: files_output1
-        type: files
-        facility: authpriv,auth
-        path: /var/log/secure
-    logging_flows:
-      - name: flow0
-        inputs: [files_input0, files_input1]
-        outputs: [files_output0, files_output1]
-```
+    ---
+    - name: Deploying files input and configured files output
+      hosts: all
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: files_input0
+            type: files
+            input_log_path: /var/log/containerA/*.log
+          - name: files_input1
+            type: files
+            input_log_path: /var/log/containerB/*.log
+        logging_outputs:
+          - name: files_output0
+            type: files
+            severity: info
+            exclude:
+              - authpriv.none
+              - auth.none
+              - cron.none
+              - mail.none
+            path: /var/log/messages
+          - name: files_output1
+            type: files
+            facility: authpriv,auth
+            path: /var/log/secure
+        logging_flows:
+          - name: flow0
+            inputs: [files_input0, files_input1]
+            outputs: [files_output0, files_output1]
 
 Deploying `files input` reading logs from local files and `files output` to write to the local files based on the property-based filters.
 
-```yaml
----
-- name: Deploying files input and configured files output
-  hosts: all
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: files_input0
-        type: files
-        input_log_path: /var/log/containerA/*.log
-      - name: files_input1
-        type: files
-        input_log_path: /var/log/containerB/*.log
-    logging_outputs:
-      - name: files_output0
-        type: files
-        property: msg
-        property_op: contains
-        property_value: error
-        path: /var/log/errors.log
-      - name: files_output1
-        type: files
-        property: msg
-        property_op: "!contains"
-        property_value: error
-        path: /var/log/others.log
-    logging_flows:
-      - name: flow0
-        inputs: [files_input0, files_input1]
-        outputs: [files_output0, files_output1]
-```
+    ---
+    - name: Deploying files input and configured files output
+      hosts: all
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: files_input0
+            type: files
+            input_log_path: /var/log/containerA/*.log
+          - name: files_input1
+            type: files
+            input_log_path: /var/log/containerB/*.log
+        logging_outputs:
+          - name: files_output0
+            type: files
+            property: msg
+            property_op: contains
+            property_value: error
+            path: /var/log/errors.log
+          - name: files_output1
+            type: files
+            property: msg
+            property_op: "!contains"
+            property_value: error
+            path: /var/log/others.log
+        logging_flows:
+          - name: flow0
+            inputs: [files_input0, files_input1]
+            outputs: [files_output0, files_output1]
 
 ### Client configuration
 
 Deploying `basics input` reading logs from systemd journal and `forwards output` to forward the logs to the remote rsyslog.
 
-```yaml
----
-- name: Deploying basics input and forwards output
-  hosts: clients
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: basic_input
-        type: basics
-    logging_outputs:
-      - name: forward_output0
-        type: forwards
-        severity: info
-        target: your_target_hostname
-        udp_port: 514
-      - name: forward_output1
-        type: forwards
-        facility: mail
-        target: your_target_hostname
-        tcp_port: 514
-    logging_flows:
-      - name: flows0
-        inputs: [basic_input]
-        outputs: [forward_output0, forward_output1]
-```
+    ---
+    - name: Deploying basics input and forwards output
+      hosts: clients
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: basic_input
+            type: basics
+        logging_outputs:
+          - name: forward_output0
+            type: forwards
+            severity: info
+            target: your_target_hostname
+            udp_port: 514
+          - name: forward_output1
+            type: forwards
+            facility: mail
+            target: your_target_hostname
+            tcp_port: 514
+        logging_flows:
+          - name: flows0
+            inputs: [basic_input]
+            outputs: [forward_output0, forward_output1]
 
 Deploying `files input` reading logs from a local file and `forwards output` to forward the logs to the remote rsyslog over tls. Assuming the ca_cert, cert and key files are prepared at the specified paths on the control host. The files are deployed to the default location `/etc/pki/tls/certs/`, `/etc/pki/tls/certs/`, and `/etc/pki/tls/private`, respectively.
 
-```yaml
----
-- name: Deploying files input and forwards output with certs
-  hosts: clients
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_pki_files:
-      - ca_cert_src: /local/path/to/ca_cert
-        cert_src: /local/path/to/cert
-        private_key_src: /local/path/to/key
-    logging_inputs:
-      - name: files_input
-        type: files
-        input_log_path: /var/log/containers/*.log
-    logging_outputs:
-      - name: forwards_output
-        type: forwards
-        target: your_target_host
-        tcp_port: your_target_port
-        pki_authmode: x509/name
-        permitted_server: '*.example.com'
-    logging_flows:
-      - name: flows0
-        inputs: [basic_input]
-        outputs: [forwards-severity_and_facility]
-```
+    ---
+    - name: Deploying files input and forwards output with certs
+      hosts: clients
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_pki_files:
+          - ca_cert_src: /local/path/to/ca_cert
+            cert_src: /local/path/to/cert
+            private_key_src: /local/path/to/key
+        logging_inputs:
+          - name: files_input
+            type: files
+            input_log_path: /var/log/containers/*.log
+        logging_outputs:
+          - name: forwards_output
+            type: forwards
+            target: your_target_host
+            tcp_port: your_target_port
+            pki_authmode: x509/name
+            permitted_server: '*.example.com'
+        logging_flows:
+          - name: flows0
+            inputs: [basic_input]
+            outputs: [forwards-severity_and_facility]
 
 ### Server configuration
 
 Deploying `remote input` reading logs from remote rsyslog and `remote_files output` to write the logs to the local files under the directory named by the remote host name.
 
-```yaml
----
-- name: Deploying remote input and remote_files output
-  hosts: server
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: remote_udp_input
-        type: remote
-        udp_ports: [514, 1514]
-      - name: remote_tcp_input
-        type: remote
-        tcp_ports: [514, 1514]
-    logging_outputs:
-      - name: remote_files_output
-        type: remote_files
-    logging_flows:
-      - name: flow_0
-        inputs: [remote_udp_input, remote_tcp_input]
-        outputs: [remote_files_output]
-```
+    ---
+    - name: Deploying remote input and remote_files output
+      hosts: server
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: remote_udp_input
+            type: remote
+            udp_ports: [514, 1514]
+          - name: remote_tcp_input
+            type: remote
+            tcp_ports: [514, 1514]
+        logging_outputs:
+          - name: remote_files_output
+            type: remote_files
+        logging_flows:
+          - name: flow_0
+            inputs: [remote_udp_input, remote_tcp_input]
+            outputs: [remote_files_output]
 
 Deploying `remote input` reading logs from remote rsyslog and `remote_files output` to write the logs to the configured local files with the tls setup supporting 20 clients. Assuming the ca_cert, cert and key files are prepared at the specified paths on the control host. The files are deployed to the default location `/etc/pki/tls/certs/`, `/etc/pki/tls/certs/`, and `/etc/pki/tls/private`, respectively.
 
-```yaml
----
-- name: Deploying remote input and remote_files output with certs
-  hosts: server
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_pki_files:
-      - ca_cert_src: /local/path/to/ca_cert
-        cert_src: /local/path/to/cert
-        private_key_src: /local/path/to/key
-    logging_inputs:
-      - name: remote_tcp_input
-        type: remote
-        tcp_ports: [6514, 7514]
-        permitted_clients: ['*.example.com', '*.test.com']
-    logging_outputs:
-      - name: remote_files_output0
-        type: remote_files
-        remote_log_path: /var/log/remote/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log
-        async_writing: true
-        client_count: 20
-        io_buffer_size: 8192
-      - name: remote_files_output1
-        type: remote_files
-        remote_sub_path: others/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log
-    logging_flows:
-      - name: flow_0
-        inputs: [remote_udp_input, remote_tcp_input]
-        outputs: [remote_files_output0, remote_files_output1]
-```
+    ---
+    - name: Deploying remote input and remote_files output with certs
+      hosts: server
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_pki_files:
+          - ca_cert_src: /local/path/to/ca_cert
+            cert_src: /local/path/to/cert
+            private_key_src: /local/path/to/key
+        logging_inputs:
+          - name: remote_tcp_input
+            type: remote
+            tcp_ports: [6514, 7514]
+            permitted_clients: ['*.example.com', '*.test.com']
+        logging_outputs:
+          - name: remote_files_output0
+            type: remote_files
+            remote_log_path: /var/log/remote/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log
+            async_writing: true
+            client_count: 20
+            io_buffer_size: 8192
+          - name: remote_files_output1
+            type: remote_files
+            remote_sub_path: others/%FROMHOST%/%PROGRAMNAME:::secpath-replace%.log
+        logging_flows:
+          - name: flow_0
+            inputs: [remote_udp_input, remote_tcp_input]
+            outputs: [remote_files_output0, remote_files_output1]
 
 ### Client configuration with Relp
 
 Deploying `basics input` reading logs from systemd journal and `relp output` to send the logs to the remote rsyslog over relp.
 
-```yaml
----
-- name: Deploying basics input and relp output
-  hosts: clients
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: basic_input
-        type: basics
-    logging_outputs:
-      - name: relp_client
-        type: relp
-        target: logging.server.com
-        port: 20514
-        tls: true
-        ca_cert_src: /path/to/ca.pem
-        cert_src: /path/to/client-cert.pem
-        private_key_src: /path/to/client-key.pem
-        pki_authmode: name
-        permitted_servers:
-          - '*.server.com'
-    logging_flows:
-      - name: flow
-        inputs: [basic_input]
-        outputs: [relp_client]
-```
+    ---
+    - name: Deploying basics input and relp output
+      hosts: clients
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: basic_input
+            type: basics
+        logging_outputs:
+          - name: relp_client
+            type: relp
+            target: logging.server.com
+            port: 20514
+            tls: true
+            ca_cert_src: /path/to/ca.pem
+            cert_src: /path/to/client-cert.pem
+            private_key_src: /path/to/client-key.pem
+            pki_authmode: name
+            permitted_servers:
+              - '*.server.com'
+        logging_flows:
+          - name: flow
+            inputs: [basic_input]
+            outputs: [relp_client]
 
 ### Server configuration with Relp
 
 Deploying `relp input` reading logs from remote rsyslog and `remote_files output` to write the logs to the local files under the directory named by the remote host name.
 
-```yaml
----
-- name: Deploying remote input and remote_files output
-  hosts: server
-  roles:
-    - linux-system-roles.logging
-  vars:
-    logging_inputs:
-      - name: relp_server
-        type: relp
-        port: 20514
-        tls: true
-        ca_cert_src: /path/to/ca.pem
-        cert_src: /path/to/server-cert.pem
-        private_key_src: /path/to/server-key.pem
-        pki_authmode: name
-        permitted_clients:
-          - '*.client.com'
-          - '*.example.com'
-    logging_outputs:
-      - name: remote_files_output
-        type: remote_files
-    logging_flows:
-      - name: flow
-        inputs: [relp_server]
-        outputs: [remote_files_output]
-```
+    ---
+    - name: Deploying remote input and remote_files output
+      hosts: server
+      roles:
+        - linux-system-roles.logging
+      vars:
+        logging_inputs:
+          - name: relp_server
+            type: relp
+            port: 20514
+            tls: true
+            ca_cert_src: /path/to/ca.pem
+            cert_src: /path/to/server-cert.pem
+            private_key_src: /path/to/server-key.pem
+            pki_authmode: name
+            permitted_clients:
+              - '*.client.com'
+              - '*.example.com'
+        logging_outputs:
+          - name: remote_files_output
+            type: remote_files
+        logging_flows:
+          - name: flow
+            inputs: [relp_server]
+            outputs: [remote_files_output]
 
 ### Port and SELinux
 
 SELinux is only configured to allow sending and receiving on the following ports by default:
 
-```
-syslogd_port_t        tcp   514, 20514
-syslogd_port_t        udp   514, 20514
-```
+    syslogd_port_t        tcp   514, 20514
+    syslogd_port_t        udp   514, 20514
 
 If other ports need to be configured, you can use [linux-system-roles/selinux](https://github.com/linux-system-roles/selinux) to manage SELinux contexts.
 
